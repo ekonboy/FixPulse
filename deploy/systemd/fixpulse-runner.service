@@ -1,0 +1,16 @@
+[Unit]
+Description=FixPulse Node Runner
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/fixpulse/apps/runner
+EnvironmentFile=/var/www/fixpulse/apps/runner/.env
+ExecStart=/usr/bin/node /var/www/fixpulse/apps/runner/src/server.js
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+[Unit]
+Description=FixPulse Laravel Queue Worker
+After=network.target redis.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/fixpulse/apps/web
+ExecStart=/usr/bin/php /var/www/fixpulse/apps/web/artisan queue:work redis --queue=scans,default --tries=2 --timeout=120 --sleep=1
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
