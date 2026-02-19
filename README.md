@@ -154,3 +154,30 @@ Luego en Laravel:
 cd m:\NODE\fixpulse\apps\web
 php artisan migrate
 ```
+# FixPulse — Interpretación de Issue + Flujo de acciones (Patch / PR / Revert)
+
+## Ejemplo de issue
+**Título:** Imágenes fuera de pantalla sin lazy-load  
+**Issue key:** `offscreen-images`  
+**Tipo:** `PERF` (Performance)
+
+**Ahorro estimado:**
+- **Tiempo:** ~310 ms (estimación Lighthouse)
+- **Transferencia:** ~733 KB (estimación Lighthouse)
+
+---
+
+## Qué significa “Imágenes fuera de pantalla sin lazy-load”
+La página está **descargando imágenes que el usuario no ve al inicio** (están “por debajo del primer pantallazo”) y además **no** se están cargando con lazy-loading.
+
+**Efecto:** más KB descargados al inicio → peor performance (sobre todo en móvil/red lenta).
+
+**Qué se suele hacer para arreglarlo (ejemplos):**
+- Añadir `loading="lazy"` a imágenes no críticas (galerías, secciones inferiores).
+- Añadir `decoding="async"` para mejorar el render.
+- Mantener **sin lazy** las imágenes “hero/above the fold” (las primeras visibles), para no empeorar LCP.
+
+Ejemplo típico:
+```html
+<img src="/img/galeria-1.jpg" width="800" height="600" loading="lazy" decoding="async" alt="..." />
+
