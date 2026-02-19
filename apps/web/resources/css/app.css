@@ -1,3 +1,112 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --primary-color: #d0ff71;
+    --secondary-color: #5f1ca4;
+    --success-color: #5f1ca4;
+    --dark-bg: #1f2937;
+    --danger-color: #da3633;
+    --warning-color: #d29922;
+    --light-bg: #111314;
+    --border-color: #30363d;
+    --text-dark: #fff;
+    --text-light: #fff;
+    --spacing: 1rem;
+}
+
+@layer base {
+    html,
+    body {
+        background-color: #020617 !important;
+        background-image: none !important;
+    }
+
+    body {
+        font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
+        color: var(--text-light);
+    }
+}
+
+@layer components {
+    .bg-white,
+    .bg-gray-50,
+    .bg-gray-100 {
+        background-color: var(--light-bg) !important;
+        color: var(--text-light) !important;
+    }
+
+    .border-gray-100,
+    .border-gray-200,
+    .border-gray-300 {
+        border-color: var(--border-color) !important;
+    }
+
+    .text-gray-900,
+    .text-gray-800,
+    .text-gray-700,
+    .text-gray-600,
+    .text-gray-500 {
+        color: var(--text-light) !important;
+    }
+
+    .text-indigo-600,
+    .text-indigo-700,
+    .text-indigo-800 {
+        color: var(--primary-color) !important;
+    }
+
+    .hover\:text-indigo-800:hover,
+    .hover\:text-gray-900:hover,
+    .hover\:text-gray-700:hover {
+        color: var(--primary-color) !important;
+    }
+
+    .bg-indigo-600,
+    .hover\:bg-indigo-700:hover {
+        background-color: var(--secondary-color) !important;
+    }
+
+    .shadow,
+    .shadow-sm,
+    .shadow-md,
+    .shadow-xl {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    input:where([type=text]),
+    input:where(:not([type])),
+    input:where([type=email]),
+    input:where([type=url]),
+    input:where([type=password]),
+    input:where([type=number]),
+    input:where([type=date]),
+    input:where([type=datetime-local]),
+    input:where([type=month]),
+    input:where([type=search]),
+    input:where([type=tel]),
+    input:where([type=time]),
+    input:where([type=week]),
+    select:where([multiple]),
+    textarea,
+    select {
+        background-color: #0f1722 !important;
+        color: #ffffff !important;
+        border-color: var(--border-color) !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: #9ca3af !important;
+        opacity: 1;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 2px rgba(208, 255, 113, 0.22) !important;
+        outline: none !important;
+    }
+}

@@ -1,7 +1,11 @@
 const lighthouseModule = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
 const fs = require('node:fs');
-const lighthouse = lighthouseModule.default ?? lighthouseModule;
+
+const lighthouse = lighthouseModule?.default ?? lighthouseModule?.lighthouse ?? lighthouseModule;
+if (typeof lighthouse !== 'function') {
+  throw new Error('Unable to resolve lighthouse function from module export.');
+}
 
 function resolveChromePath(chromePath) {
   if (!chromePath) {
@@ -26,27 +30,40 @@ async function runLighthouseAudit({ url, device, locale, timeoutMs, chromePath }
 
   try {
     const isDesktop = device === 'desktop';
+    const settings = {
+      port: chrome.port,
+      output: 'json',
+      logLevel: 'error',
+      throttlingMethod: 'simulate',
+      maxWaitForLoad: timeoutMs,
+      locale,
+    };
+
+    if (isDesktop) {
+      settings.preset = 'desktop';
+      settings.formFactor = 'desktop';
+      settings.screenEmulation = {
+        mobile: false,
+        width: 1350,
+        height: 940,
+        deviceScaleFactor: 1,
+        disabled: false,
+      };
+    }
+
     const result = await lighthouse(
       url,
-      {
-        port: chrome.port,
-        output: 'json',
-        logLevel: 'error',
-        preset: isDesktop ? 'desktop' : undefined,
-        formFactor: isDesktop ? 'desktop' : 'mobile',
-        throttlingMethod: 'simulate',
-        screenEmulation: isDesktop
-          ? { mobile: false, width: 1350, height: 940, deviceScaleFactor: 1, disabled: false }
-          : { mobile: true, width: 390, height: 844, deviceScaleFactor: 2, disabled: false },
-        maxWaitForLoad: timeoutMs,
-        locale,
-      },
+      settings,
       undefined,
     );
 
     return result.lhr;
   } finally {
-    await chrome.kill();
+    try {
+      await chrome.kill();
+    } catch (_) {
+      // Cleanup errors in temporary profile directories should not fail the scan.
+    }
   }
 }
 

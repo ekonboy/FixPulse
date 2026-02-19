@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Issue;
 use App\Models\Scan;
+use App\Models\ScanArtifact;
 use App\Services\IssueNormalizer;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -41,6 +42,20 @@ class NormalizeIssuesJob implements ShouldQueue
         }
 
         $normalizedIssues = $normalizer->normalize($lhr);
+        $normalizedPath = sprintf('scans/%d/normalized.json', $scan->id);
+        Storage::disk('local')->put($normalizedPath, json_encode($normalizedIssues, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+        ScanArtifact::query()->updateOrCreate(
+            ['scan_id' => $scan->id, 'kind' => 'normalized_json'],
+            [
+                'path' => $normalizedPath,
+                'meta_jsonb' => [
+                    'generated_at' => now()->toIso8601String(),
+                    'source' => 'issue_normalizer',
+                    'issues_count' => count($normalizedIssues),
+                ],
+            ]
+        );
 
         Issue::query()->where('scan_id', $scan->id)->delete();
 

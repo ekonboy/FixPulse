@@ -9,6 +9,7 @@ use App\Jobs\RunLighthouseJob;
 use App\Models\Project;
 use App\Models\Scan;
 use App\Services\TechnologyLookupService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -41,6 +42,7 @@ class ScanController extends Controller
         $scan->load([
             'project',
             'issues.resources',
+            'issues.actions',
             'fixPlan',
         ]);
 
@@ -73,5 +75,25 @@ class ScanController extends Controller
         );
 
         return view('scans.show', compact('scan', 'technology'));
+    }
+
+    public function status(Request $request, Scan $scan): JsonResponse
+    {
+        abort_unless($scan->user_id === $request->user()->id, 404);
+
+        $scan->loadCount('issues');
+
+        return response()->json([
+            'id' => $scan->id,
+            'status' => $scan->status,
+            'issues_count' => $scan->issues_count,
+            'error_code' => $scan->error_code,
+            'error_message' => $scan->error_message,
+            'started_at' => optional($scan->started_at)?->toIso8601String(),
+            'finished_at' => optional($scan->finished_at)?->toIso8601String(),
+            'updated_at' => optional($scan->updated_at)?->toIso8601String(),
+        ])->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 }

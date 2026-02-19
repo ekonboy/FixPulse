@@ -25,6 +25,10 @@ const techPayloadSchema = z.object({
 });
 
 fastify.addHook('onRequest', async (request, reply) => {
+  if (request.raw.url && request.raw.url.startsWith('/health')) {
+    return;
+  }
+
   const apiKey = request.headers['x-runner-key'];
   if (apiKey !== RUNNER_KEY) {
     return reply.code(401).send({

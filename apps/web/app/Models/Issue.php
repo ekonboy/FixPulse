@@ -40,4 +40,9 @@ class Issue extends Model
     {
         return $this->hasMany(IssueResource::class);
     }
+
+    public function actions(): HasMany
+    {
+        return $this->hasMany(IssueAction::class);
+    }
 }

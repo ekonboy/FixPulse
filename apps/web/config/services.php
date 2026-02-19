@@ -46,4 +46,9 @@ return [
         'private' => env('WHATCMS_PRIVATE', true),
     ],
 
+    'github' => [
+        'token' => env('GITHUB_TOKEN'),
+        'repo' => env('GITHUB_REPO'),
+    ],
+
 ];

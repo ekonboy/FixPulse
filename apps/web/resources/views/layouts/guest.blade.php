@@ -9,7 +9,12 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=outfit:400,500,600,700&display=swap" rel="stylesheet" />
+
+        <link rel="icon" href="/images/favicon.ico" sizes="any">
+        <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
+        <link rel="apple-touch-icon" href="/images/apple-icon-180x180.png" sizes="180x180">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

@@ -123,11 +123,32 @@ class RunLighthouseJob implements ShouldQueue
 
     private function extractSummary(array $lhr): array
     {
+        $performance = (int) round((float) Arr::get($lhr, 'categories.performance.score', 0) * 100);
+        $seo = (int) round((float) Arr::get($lhr, 'categories.seo.score', 0) * 100);
+        $a11y = (int) round((float) Arr::get($lhr, 'categories.accessibility.score', 0) * 100);
+        $bestPractices = (int) round((float) Arr::get($lhr, 'categories.best-practices.score', 0) * 100);
+
+        // Weighted score prioritizing business value:
+        // Performance 50%, SEO 25%, Accessibility 15%, Best Practices 10%.
+        $weighted = (int) round(
+            ($performance * 0.50)
+            + ($seo * 0.25)
+            + ($a11y * 0.15)
+            + ($bestPractices * 0.10)
+        );
+
         return [
-            'performance_score' => (int) round((float) Arr::get($lhr, 'categories.performance.score', 0) * 100),
-            'seo_score' => (int) round((float) Arr::get($lhr, 'categories.seo.score', 0) * 100),
-            'a11y_score' => (int) round((float) Arr::get($lhr, 'categories.accessibility.score', 0) * 100),
-            'best_practices_score' => (int) round((float) Arr::get($lhr, 'categories.best-practices.score', 0) * 100),
+            'performance_score' => $performance,
+            'seo_score' => $seo,
+            'a11y_score' => $a11y,
+            'best_practices_score' => $bestPractices,
+            'weighted_score' => $weighted,
+            'weighted_formula' => [
+                'performance' => 0.50,
+                'seo' => 0.25,
+                'accessibility' => 0.15,
+                'best_practices' => 0.10,
+            ],
             'fcp_ms' => (int) round((float) Arr::get($lhr, 'audits.first-contentful-paint.numericValue', 0)),
             'lcp_ms' => (int) round((float) Arr::get($lhr, 'audits.largest-contentful-paint.numericValue', 0)),
             'cls' => (float) Arr::get($lhr, 'audits.cumulative-layout-shift.numericValue', 0),

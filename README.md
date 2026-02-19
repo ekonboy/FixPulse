@@ -21,6 +21,52 @@ fixpulse/
     systemd/
 ```
 
+## Inicio Rapido (1 comando)
+Desde la raiz del repo:
+```powershell
+cd m:\NODE\fixpulse
+.\start-dev.ps1
+```
+
+Para apagar todo:
+```powershell
+cd m:\NODE\fixpulse
+.\stop-dev.ps1
+```
+
+M:\NODE\fixpulse\apps\web
+php artisan serve
+
+cd m:\NODE\fixpulse\apps\web
+php artisan queue:work --queue=scans,default --tries=2 --timeout=120
+
+cd m:\NODE\fixpulse\apps\runner
+npm install
+npm run dev
+
+http://localhost:8000/register
+http://localhost:4321/ astro
+
+fast:
+cd m:\NODE\fixpulse
+.\start-dev.ps1
+
+Parar todo:
+cd m:\NODE\fixpulse
+.\stop-dev.ps1
+
+Opcional (si no quieres que limpie procesos antes de arrancar):
+.\start-dev.ps1 -NoClean
+
+all:
+cd m:\NODE\fixpulse
+.\start-demo.ps1
+
+Opcional:
+.\start-demo.ps1 -AstroPort 4322
+.\start-demo.ps1 -NoClean
+
+
 ## Configuración Local
 ### 1) Laravel (`apps/web`)
 Desde PowerShell:
@@ -41,7 +87,7 @@ DB_DATABASE=fixpulse
 DB_USERNAME=fixpulse
 DB_PASSWORD=secret
 
-QUEUE_CONNECTION=redis
+QUEUE_CONNECTION=database
 CACHE_STORE=redis
 REDIS_CLIENT=predis
 REDIS_HOST=127.0.0.1
@@ -95,7 +141,7 @@ php artisan serve --host=127.0.0.1 --port=8000
 ### Terminal 2: Queue Worker
 ```powershell
 cd m:\NODE\fixpulse\apps\web
-php artisan queue:work redis --queue=scans,default --tries=2 --timeout=120
+php artisan queue:work --queue=scans,default --tries=2 --timeout=120
 ```
 
 ### Terminal 3: Node Runner

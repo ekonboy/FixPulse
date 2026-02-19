@@ -1,7 +1,18 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">FixPulse Dashboard</h2>
     </x-slot>
+
+    @php
+        $scanBadgeClass = static function (int $count): string {
+            return match (true) {
+                $count >= 10 => 'border-lime-300/60 bg-lime-300/15 text-lime-200',
+                $count >= 3 => 'border-sky-300/60 bg-sky-300/15 text-sky-200',
+                $count >= 1 => 'border-amber-300/60 bg-amber-300/15 text-amber-200',
+                default => 'border-slate-500/50 bg-slate-700/20 text-slate-300',
+            };
+        };
+    @endphp
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -45,14 +56,21 @@
                                 <tr>
                                     <td class="px-3 py-2">{{ $project->name }}</td>
                                     <td class="px-3 py-2">{{ $project->base_url }}</td>
-                                    <td class="px-3 py-2">{{ $project->scans_count }}</td>
                                     <td class="px-3 py-2">
-                                        <a href="{{ route('projects.show', $project) }}" class="text-indigo-600 hover:text-indigo-800">Ver</a>
+                                        <span class="inline-flex min-w-10 items-center justify-center rounded-full border px-2.5 py-1 text-xs font-semibold {{ $scanBadgeClass((int) $project->scans_count) }}">
+                                            {{ $project->scans_count }}
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        <a href="{{ route('projects.show', $project) }}" class="inline-flex items-center gap-1 rounded-md border border-indigo-400/40 bg-indigo-500/15 px-3 py-1.5 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/25 hover:text-indigo-100">
+                                            Ver proyecto
+                                            <span aria-hidden="true">></span>
+                                        </a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-3 py-6 text-center text-gray-500">Sin proyectos todavía.</td>
+                                    <td colspan="4" class="px-3 py-6 text-center text-gray-500">Sin proyectos todav�a.</td>
                                 </tr>
                             @endforelse
                         </tbody>
